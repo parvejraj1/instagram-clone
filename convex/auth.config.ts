@@ -1,11 +1,10 @@
-import { defineConfig } from "convex/server";
-import { github } from "convex/auth";
-
 export default {
   providers: [
     {
+      name: "github",
       domain: "https://github.com",
-      applicationID: process.env.VITE_GITHUB_OAUTH_CLIENT_ID as string,
+      clientID: process.env.VITE_GITHUB_OAUTH_CLIENT_ID!,
+      clientSecret: process.env.AUTH_CLIENT_SECRET!
     }
   ]
 };
