@@ -8,6 +8,10 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      deployments: write
 
     steps:
       - name: Checkout
@@ -21,10 +25,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Set Environment Variables
+        run: |
+          echo "VITE_CONVEX_URL=https://perfect-mule-434.convex.cloud" >> $GITHUB_ENV
+          echo "VITE_GITHUB_OAUTH_CLIENT_ID=Ov23ctfKRnBlzYMcQC2f" >> $GITHUB_ENV
+
       - name: Build
-        env:
-          VITE_CONVEX_URL: "https://perfect-mule-434.convex.cloud"
-          VITE_GITHUB_OAUTH_CLIENT_ID: ${{ secrets.VITE_GITHUB_OAUTH_CLIENT_ID }}
         run: npm run build
 
       - name: Deploy to GitHub Pages
