@@ -4,9 +4,11 @@ import { v } from "convex/values";
 export default defineSchema({
   users: defineTable({
     name: v.optional(v.string()),
-    userId: v.optional(v.string()),
+    userId: v.optional(v.string()), // Keep optional during migration
+    username: v.optional(v.string()), // Keep optional during migration
+    email: v.optional(v.string()),
     isAnonymous: v.optional(v.boolean()),
-  }),
+  }).index("by_username", ["username"]),
   posts: defineTable({
     imageId: v.string(),
     authorId: v.string(),

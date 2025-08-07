@@ -55,13 +55,17 @@ export function StreamTab({ isDarkMode }: StreamTabProps) {
               )}
             </div>
             
-            {post.imageUrl && (
+            <div className="relative pb-[75%] bg-gray-100">
               <img
-                src={post.imageUrl}
-                alt="Post"
-                className="w-full max-h-96 object-cover"
+                src={post.imageUrl || ''}
+                alt={post.caption || 'Post'}
+                className="absolute inset-0 w-full h-full object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+                }}
               />
-            )}
+            </div>
             
             <div className="p-4">
               <div className="flex items-center space-x-4">

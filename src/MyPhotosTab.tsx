@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PostView } from "./PostView";
 
 interface MyPhotosTabProps {
@@ -10,7 +10,17 @@ interface MyPhotosTabProps {
 }
 
 export function MyPhotosTab({ isDarkMode }: MyPhotosTabProps) {
-  const posts = useQuery(api.posts.getMyPosts);
+  const [currentUserId, setCurrentUserId] = useState<string>('');
+  
+  useEffect(() => {
+    const userId = localStorage.getItem('userId'); // Updated to use 'userId' instead of 'currentUserId'
+    if (userId) {
+      setCurrentUserId(userId);
+    }
+  }, []);
+
+  const posts = useQuery(api.posts.getMyPosts, { userId: currentUserId });
+  const imageUrls = useQuery(api.posts.getImageUrls);
   const deletePost = useMutation(api.posts.deletePost);
   const [selectedPost, setSelectedPost] = useState<NonNullable<typeof posts>[0] | null>(null);
 
@@ -57,7 +67,7 @@ export function MyPhotosTab({ isDarkMode }: MyPhotosTabProps) {
                 comments: [],
                 commentCount: post.commentCount || 0,
                 likeCount: post.likeCount || 0,
-                imageUrl: post.imageUrl || undefined
+                imageUrl: imageUrls?.[post.imageId] || ''
               }} 
               isDarkMode={isDarkMode} 
             />
@@ -110,7 +120,7 @@ export function MyPhotosTab({ isDarkMode }: MyPhotosTabProps) {
                   comments: [],
                   commentCount: selectedPost.commentCount || 0,
                   likeCount: selectedPost.likeCount || 0,
-                  imageUrl: selectedPost.imageUrl || undefined
+                  imageUrl: imageUrls?.[selectedPost.imageId] || ''
                 }}
                 isDarkMode={isDarkMode}
                 isExpandedView={true}

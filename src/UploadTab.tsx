@@ -97,7 +97,7 @@ export function UploadTab({ isDarkMode, onUploadComplete }: UploadTabProps) {
 
     setIsUploading(true);
     setUploadProgress(0);
-    
+
     try {
       // Step 1: Get upload URL
       const uploadUrl = await generateUploadUrl();
@@ -125,23 +125,40 @@ export function UploadTab({ isDarkMode, onUploadComplete }: UploadTabProps) {
       });
       
       const response = await uploadPromise;
-      const storageId = (response as any).storageId;
+      if (!response || typeof response !== 'object') {
+        throw new Error("Invalid upload response");
+      }
       
+      const storageId = (response as any).storageId;
       if (!storageId) {
         throw new Error("No storage ID returned from upload");
       }
       
       // Step 3: Create post
-      await createPost({
+      const userId = localStorage.getItem('userId');
+      const username = localStorage.getItem('username');
+      if (!userId || !username) {
+        throw new Error("User credentials not found. Please log in again.");
+      }
+      
+      // Create the post and wait for completion
+      const newPost = await createPost({
         imageId: storageId,
         caption: caption || undefined,
+        userId: userId,
+        username: username
       });
+
+      if (!newPost) {
+        throw new Error("Failed to create post");
+      }
       
       toast.success("Post created successfully!");
       resetForm();
       setSelectedFile(null);
       
-      // Navigate to stream tab after successful upload
+      // Wait a moment for the backend to process
+      await new Promise(resolve => setTimeout(resolve, 1000));
       if (onUploadComplete) {
         onUploadComplete();
       }

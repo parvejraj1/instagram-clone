@@ -3,6 +3,7 @@ import { ConvexProvider } from "convex/react";
 import { ConvexReactClient } from "convex/react";
 import "./index.css";
 import App from "./App";
+import { initializeDarkMode } from "./darkMode";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL;
 
@@ -11,6 +12,9 @@ if (!convexUrl) {
 }
 
 const convex = new ConvexReactClient(convexUrl);
+
+// Initialize dark mode before rendering
+initializeDarkMode();
 
 createRoot(document.getElementById("root")!).render(
   <ConvexProvider client={convex}>
