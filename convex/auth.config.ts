@@ -1,8 +1,11 @@
+import { defineConfig } from "convex/server";
+import { github } from "convex/auth";
+
 export default {
   providers: [
     {
-      domain: "clerk.accounts.dev",
-      applicationID: "brave-guineapig-389",
-    },
-  ],
+      domain: "https://github.com",
+      applicationID: process.env.VITE_GITHUB_OAUTH_CLIENT_ID as string,
+    }
+  ]
 };
