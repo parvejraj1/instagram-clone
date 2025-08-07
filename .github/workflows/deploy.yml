@@ -27,8 +27,8 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "VITE_CONVEX_URL=https://perfect-mule-434.convex.cloud" >> $GITHUB_ENV
-          echo "VITE_GITHUB_OAUTH_CLIENT_ID=Ov23ctfKRnBlzYMcQC2f" >> $GITHUB_ENV
+          echo "VITE_CONVEX_URL=${{ secrets.VITE_CONVEX_URL }}" >> $GITHUB_ENV
+          echo "VITE_GITHUB_OAUTH_CLIENT_ID=${{ secrets.VITE_GITHUB_OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
 
       - name: Build
         run: npm run build
