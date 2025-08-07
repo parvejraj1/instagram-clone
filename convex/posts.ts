@@ -89,6 +89,75 @@ export const getImageUrls = query({
   },
 });
 
+export const createPost = mutation({
+  args: {
+    imageId: v.string(),
+    caption: v.optional(v.string()),
+    userId: v.string(),
+    username: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Validate inputs
+    if (!args.imageId) {
+      throw new Error("Image ID is required");
+    }
+    if (!args.userId) {
+      throw new Error("User ID is required");
+    }
+    if (!args.username) {
+      throw new Error("Username is required");
+    }
+
+    try {
+      // Verify the image exists in storage
+      const imageExists = await ctx.storage.getUrl(args.imageId);
+      if (!imageExists) {
+        throw new Error("Image not found in storage");
+      }
+
+      // Create or update user first to ensure referential integrity
+      const existingUser = await ctx.db
+        .query("users")
+        .filter((q) => q.eq(q.field("userId"), args.userId))
+        .first();
+
+      if (!existingUser) {
+        await ctx.db.insert("users", {
+          userId: args.userId,
+          username: args.username,
+        });
+      }
+
+      // Create the post
+      const postId = await ctx.db.insert("posts", {
+        imageId: args.imageId,
+        authorId: args.userId,
+        caption: args.caption,
+        likeCount: 0,
+        commentCount: 0,
+      });
+
+      if (!postId) {
+        throw new Error("Failed to create post record");
+      }
+
+      return postId;
+    } catch (error) {
+      console.error("Create post error:", error);
+      if (error instanceof Error) {
+        if (error.message.includes("storage")) {
+          throw new Error("Failed to verify image: " + error.message);
+        } else if (error.message.includes("users")) {
+          throw new Error("Failed to create/update user: " + error.message);
+        } else if (error.message.includes("posts")) {
+          throw new Error("Failed to create post: " + error.message);
+        }
+      }
+      throw new Error("Failed to create post: " + (error instanceof Error ? error.message : "Unknown error"));
+    }
+  },
+});
+
 export const getMyPosts = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
@@ -220,37 +289,3 @@ export const toggleLike = mutation({
   }
 });
 
-export const createPost = mutation({
-  args: {
-    imageId: v.string(),
-    caption: v.optional(v.string()),
-    userId: v.string(),
-    username: v.string(),
-  },
-  handler: async (ctx, args) => {
-    // First, ensure the user exists or create them
-    const existingUser = await ctx.db
-      .query("users")
-      .filter(q => q.eq(q.field("userId"), args.userId))
-      .first();
-
-    if (!existingUser) {
-      await ctx.db.insert("users", {
-        userId: args.userId,
-        username: args.username,
-      });
-    }
-
-    // Create the post
-    const post = await ctx.db.insert("posts", {
-      imageId: args.imageId,
-      authorId: args.userId,
-      caption: args.caption,
-      likeCount: 0,
-      commentCount: 0,
-    });
-
-    // Return the post ID for reference
-    return post;
-  },
-});

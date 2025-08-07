@@ -19,5 +19,5 @@ initializeDarkMode();
 createRoot(document.getElementById("root")!).render(
   <ConvexProvider client={convex}>
     <App />
-  </ConvexProvider>,
+  </ConvexProvider>
 );
