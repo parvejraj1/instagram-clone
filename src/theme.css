@@ -1,0 +1,55 @@
+/* Dark mode styles */
+:root[class~="dark"] {
+  --text-primary: #ffffff;
+  --text-secondary: #e5e7eb;
+  --text-tertiary: #9ca3af;
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-interactive: #374151;
+  --bg-interactive-hover: #4b5563;
+  --border-color: #374151;
+}
+
+/* Light mode styles */
+:root {
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #6b7280;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-interactive: #f3f4f6;
+  --bg-interactive-hover: #e5e7eb;
+  --border-color: #e5e7eb;
+}
+
+.text-themed-primary {
+  color: var(--text-primary);
+}
+
+.text-themed-secondary {
+  color: var(--text-secondary);
+}
+
+.text-themed-tertiary {
+  color: var(--text-tertiary);
+}
+
+.bg-themed-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-themed-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-themed-interactive {
+  background-color: var(--bg-interactive);
+}
+
+.bg-themed-interactive:hover {
+  background-color: var(--bg-interactive-hover);
+}
+
+.border-themed {
+  border-color: var(--border-color);
+}

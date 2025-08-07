@@ -1,0 +1,109 @@
+import { api } from "../convex/_generated/api";
+import { Id } from "../convex/_generated/dataModel";
+import { useMutation } from "convex/react";
+import { CommentSection } from "./CommentSection";
+
+interface PostViewProps {
+  post: {
+    _id: Id<"posts">;
+    _creationTime: number;
+    authorName: string;
+    caption?: string;
+    imageUrl?: string;
+    likeCount: number;
+    commentCount: number;
+    isLiked: boolean;
+    comments?: any[];
+  };
+  isDarkMode: boolean;
+  isExpandedView?: boolean;
+}
+
+export function PostView({ post, isDarkMode, isExpandedView = false }: PostViewProps) {
+  const toggleLike = useMutation(api.posts.toggleLike);
+
+  const handleLike = async (postId: Id<"posts">) => {
+    try {
+      await toggleLike({ postId });
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+
+  if (isExpandedView) {
+    return (
+      <div className={`border rounded-lg overflow-hidden ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+        <div className={`p-4 border-b ${isDarkMode ? 'bg-gray-700/50 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+          <div className="flex items-center justify-between">
+            <span className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{post.authorName}</span>
+            <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              {new Date(post._creationTime).toLocaleDateString()}
+            </span>
+          </div>
+          {post.caption && (
+            <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{post.caption}</p>
+          )}
+        </div>
+        
+        {post.imageUrl && (
+          <img
+            src={post.imageUrl}
+            alt="Post"
+            className="w-full max-h-96 object-cover"
+          />
+        )}
+        
+        <div className="p-4">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => handleLike(post._id)}
+              className={`flex items-center space-x-2 px-3 py-1 rounded-full transition-colors ${
+                post.isLiked
+                  ? isDarkMode 
+                    ? "bg-red-900/30 text-red-400" 
+                    : "bg-red-100 text-red-600"
+                  : isDarkMode
+                    ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              <span className="text-lg">{post.isLiked ? "❤️" : "🤍"}</span>
+              <span className="font-medium">{post.likeCount}</span>
+            </button>
+            <span className={`${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>•</span>
+            <span className={`${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>{post.commentCount || 0} comments</span>
+          </div>
+          
+          <div className="mt-4">
+            <CommentSection postId={post._id} initialComments={post.comments || []} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`border rounded-lg overflow-hidden ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}`}>
+      {post.imageUrl && (
+        <div className="relative group cursor-pointer">
+          <img
+            src={post.imageUrl}
+            alt="Your post"
+            className="w-full h-48 object-cover"
+          />
+          <div className={`absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${isDarkMode ? 'bg-black/50' : 'bg-white/50'}`}>
+            <div className={`text-center ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              <div className="flex items-center space-x-3 font-medium">
+                <span>❤️ {post.likeCount}</span>
+                <span>💬 {post.commentCount}</span>
+              </div>
+              {post.caption && (
+                <p className="mt-2 px-4 text-sm truncate max-w-[200px]">{post.caption}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
