@@ -23,7 +23,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
+          VITE_CONVEX_URL: "https://perfect-mule-434.convex.cloud"
           VITE_GITHUB_OAUTH_CLIENT_ID: ${{ secrets.VITE_GITHUB_OAUTH_CLIENT_ID }}
         run: npm run build
 
