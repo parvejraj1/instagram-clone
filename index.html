@@ -3,11 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     
     
     <title>Photogram</title>
 
     <meta property="og:image" content="/og-preview.png" />
+    
+    <!-- Add loading indicator -->
+    <style>
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+      }
+      #root:empty + .loading {
+        display: flex;
+      }
+      #root:not(:empty) + .loading {
+        display: none;
+      }
+    </style>
     
     <!-- Ensure environment variables are available -->
     <script>
@@ -33,11 +53,12 @@
       }(window.location))
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
-    <script type="module" crossorigin src="/instagram-clone/assets/index-d80b0e11.js"></script>
-    <link rel="stylesheet" href="/instagram-clone/assets/index-2d5d5036.css">
+    <script type="module" crossorigin src="/assets/index-6b524c1e.js"></script>
+    <link rel="stylesheet" href="/assets/index-2d5d5036.css">
   </head>
   <body>
     <div id="root"></div>
+    <div class="loading">Loading Instagram Clone...</div>
     
   </body>
 </html>
