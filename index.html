@@ -3,14 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     
-
+    
     <title>Photogram</title>
 
     <meta property="og:image" content="/og-preview.png" />
-    <script type="module" crossorigin src="/instagram-clone/assets/index-143fb782.js"></script>
-    <link rel="stylesheet" href="/instagram-clone/assets/index-b023f72c.css">
+    
+    <!-- Start Single Page Apps for GitHub Pages -->
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+    <!-- End Single Page Apps for GitHub Pages -->
+    <script type="module" crossorigin src="./assets/index-2d60ec1e.js"></script>
+    <link rel="stylesheet" href="./assets/index-cc21889b.css">
   </head>
   <body>
     <div id="root"></div>
