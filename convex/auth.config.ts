@@ -1,9 +1,10 @@
 export default {
   providers: [
     {
-      provider: "github",
+      domain: "https://github.com",
       applicationID: process.env.VITE_GITHUB_OAUTH_CLIENT_ID ?? "",
-      applicationSecret: process.env.AUTH_CLIENT_SECRET ?? ""
+      applicationSecret: process.env.AUTH_CLIENT_SECRET ?? "",
+      service: "github"
     }
   ]
 };

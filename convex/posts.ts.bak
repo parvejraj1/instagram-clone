@@ -2,6 +2,31 @@ import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 
+export const addComment = mutation({
+  args: {
+    postId: v.id("posts"),
+    content: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+
+    // Create the comment
+    const commentId = await ctx.db.insert("comments", {
+      text: args.content,
+      postId: args.postId,
+      userId,
+      createdAt: Date.now(),
+    });
+
+    return commentId;
+  },
+});
+query, mutation } from "./_generated/server";
+
 export const getGlobalStream = query(async (ctx) => {
   const posts = await ctx.db
     .query("posts")
@@ -212,23 +237,18 @@ export const getComments = query({
   },
 });
 
-export const addComment = mutation({
+export const createComment = mutation({
   args: {
     postId: v.id("posts"),
-    content: v.string(),
+    userId: v.string(),
+    text: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-    const userId = identity.subject;
-
     // Create the comment
-    const commentId = await ctx.db.insert("comments", {
-      text: args.content,
+    const comment = await ctx.db.insert("comments", {
       postId: args.postId,
-      userId,
+      userId: args.userId,
+      text: args.text,
       createdAt: Date.now(),
     });
 
@@ -240,7 +260,7 @@ export const addComment = mutation({
       });
     }
 
-    return commentId;
+    return comment;
   },
 });
 
@@ -293,3 +313,4 @@ export const toggleLike = mutation({
     return true;
   }
 });
+
